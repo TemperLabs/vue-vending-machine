@@ -1,36 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
-const initialState = {
-  user: {
-    goods: {
-      tea: null,
-      coffee: null,
-      juice: null
-    },
-    coins: [
-      {
-        cost: 1,
-        amount: 10
-      },
-      {
-        cost: 2,
-        amount: 30
-      },
-      {
-        cost: 5,
-        amount: 20
-      },
-      {
-        cost: 10,
-        amount: 15
-      }
-    ]
-  }
-}
 export default new Vuex.Store({
   state: {
+    isInitialised: false,
     user: {
       goods: [
         {
@@ -57,19 +32,19 @@ export default new Vuex.Store({
       coins: [
         {
           cost: 1,
-          amount: 10
+          amount: 0
         },
         {
           cost: 2,
-          amount: 30
+          amount: 0
         },
         {
           cost: 5,
-          amount: 20
+          amount: 0
         },
         {
           cost: 10,
-          amount: 15
+          amount: 0
         }
       ]
     },
@@ -115,7 +90,8 @@ export default new Vuex.Store({
           amount: 100
         }
       ]
-    }
+    },
+    thxPayment: false
   },
   getters: {
     userTotal: state => {
@@ -144,10 +120,6 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    INIT_STATE (state) {
-      state.isInitialised = true
-      state = initialState
-    },
     INSERT_COIN (state, payload) {
       const userCoin = state.user.coins.find((el) => el.cost === payload)
       if (userCoin.amount > 0) {
@@ -166,19 +138,35 @@ export default new Vuex.Store({
         VMProduct.amount = VMProduct.amount - 1
         const UserProduct = state.user.goods.find(el => el.name === product.name)
         UserProduct.amount = UserProduct.amount + 1
+        state.thxPayment = true
       }
     },
     GET_PAYBACK (state, payload) {
       state.payment = payload.paybackLocal
       state.cashier.coins = payload.cashierCoins
       state.user.coins = payload.userCoins
+    },
+    INIT_STATE (state, payload) {
+      console.log(payload)
+      state.isInitialised = true
+      state.user = payload.user
+      state.cashier = payload.cashier
+      console.log(state.user)
+    },
+    TOGGLETHXPAYMENT (state) {
+      state.thxPayment = false
     }
 
   },
   actions: {
     initState ({ commit, state }) {
+      console.log(state.isInitialised)
       if (!state.isInitialised) {
-        commit('INIT_STATE')
+        console.log(555)
+        axios.get('user.json')
+          .then(response => {
+            commit('INIT_STATE', response.data)
+          })
       }
     },
     insertCoin ({ commit }, payload) {
@@ -186,6 +174,9 @@ export default new Vuex.Store({
     },
     buyProduct ({ commit }, payload) {
       commit('BUY_PRODUCT', payload)
+    },
+    toggleThxPayment ({ commit }) {
+      commit('TOGGLETHXPAYMENT')
     },
     getPayback ({ commit, getters, state }) {
       let paybackLocal = state.payment

@@ -2,10 +2,9 @@
   <div id="app">
     <div class="vm">
       <div>
-        {{userTotal}}
         <user></user>
       </div>
-      <payment />
+      <div v-show="thxPayment" @click="toggleThxPayment">Спасибо</div>
     <vending-machine />
     </div>
   </div>
@@ -14,25 +13,34 @@
 <script>
 import user from './components/user'
 import vendingMachine from './components/vmachine'
-import payment from './components/payment'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions, mapState } from 'vuex'
 
 export default {
   name: 'App',
-  components: { vendingMachine, user, payment },
+  components: { vendingMachine, user },
   computed: {
-    ...mapGetters([
-      'userTotal'
-    ])
+    ...mapGetters(['userTotal']),
+    ...mapState(['thxPayment'])
+  },
+  methods: {
+    ...mapActions(['initState']),
+    ...mapActions(['toggleThxPayment'])
   },
   created () {
-    this.$store.dispatch('initState')
-    console.log(this.userTotal)
+    this.initState()
   }
 }
 </script>
 
 <style lang="scss">
+  * {
+    box-sizing: border-box;
+  }
+  ul,li,ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

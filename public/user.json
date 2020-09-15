@@ -1,0 +1,86 @@
+{
+  "user": {
+    "goods": [
+      {
+        "name": "tea",
+        "cost": 13,
+        "amount": 0
+      },
+      {
+        "name": "coffee",
+        "cost": 18,
+        "amount": 0
+      },
+      {
+        "name": "coffeemilk",
+        "cost": 21,
+        "amount": 0
+      },
+      {
+        "name": "juice",
+        "cost": 35,
+        "amount": 0
+      }
+    ],
+    "coins": [
+      {
+        "cost": 1,
+        "amount": 10
+      },
+      {
+        "cost": 2,
+        "amount": 30
+      },
+      {
+        "cost": 5,
+        "amount": 20
+      },
+      {
+        "cost": 10,
+        "amount": 15
+      }
+    ]
+  },
+  "cashier": {
+    "goods": [
+      {
+        "name": "tea",
+        "cost": 13,
+        "amount": 10
+      },
+      {
+        "name": "coffee",
+        "cost": 18,
+        "amount": 20
+      },
+      {
+        "name": "coffeemilk",
+        "cost": 21,
+        "amount": 20
+      },
+      {
+        "name": "juice",
+        "cost": 35,
+        "amount": 15
+      }
+    ],
+    "coins": [
+      {
+        "cost": 1,
+        "amount": 100
+      },
+      {
+        "cost": 2,
+        "amount": 100
+      },
+      {
+        "cost": 5,
+        "amount": 100
+      },
+      {
+        "cost": 10,
+        "amount": 100
+      }
+    ]
+  }
+}
