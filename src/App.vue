@@ -68,4 +68,9 @@ export default {
   a {
     color: #42b983;
   }
+  .vm {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 </style>

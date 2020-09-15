@@ -19,7 +19,7 @@
     </li>
   </ul>
   <button type="button" @click="getPayback">GetPayback</button>
-</div>
+  </div>
 </template>
 
 <script>
@@ -31,6 +31,7 @@ export default {
     ...mapGetters(['cashierTotal']),
     ...mapState(['cashier']),
     ...mapState(['payback']),
+    ...mapState(['payment']),
     ...mapGetters(['cashierCoins']),
     ...mapGetters(['vmachineCoins'])
   },
@@ -44,8 +45,11 @@ export default {
 
 <style lang="scss">
 .vmachine {
-  background-color: lightcoral;
+  height: 540px;
+  width: 100%;
+  background: url('~@/assets/vm.svg') no-repeat;
 }
+
   .coin_round {
     background-color: coral;
     padding: 12px;

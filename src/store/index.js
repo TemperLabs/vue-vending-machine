@@ -129,24 +129,18 @@ export default new Vuex.Store({
       }, 0)
     },
     userCoins: state => {
-      return state.user.coins
+      return state.user.coins.sort((a, b) => b.cost - a.cost)
     },
     cashierCoins: state => {
-      return state.cashier.coins
+      return state.cashier.coins.sort((a, b) => b.cost - a.cost)
     },
     userGoods: state => {
-      return state.user.goods.filter((product) => {
-        console.log(product.amount)
-        return product.amount > 0
-      })
+      return state.user.goods.filter((product) => product.amount > 0)
     },
     userTotalSpent: state => {
       return state.user.goods.reduce((total, currentAmount) => {
         return total + currentAmount.amount * currentAmount.cost
       }, 0)
-    },
-    vmachineCoins: state => {
-      return state.cashier.coins.sort((a, b) => b.cost - a.cost)
     }
   },
   mutations: {
@@ -158,17 +152,12 @@ export default new Vuex.Store({
       const userCoin = state.user.coins.find((el) => el.cost === payload)
       if (userCoin.amount > 0) {
         const vmachineCoin = state.cashier.coins.find((el) => el.cost === payload)
-        console.log('vmachineCoin')
-        console.log('vmachineCoin.amount')
-        console.log(vmachineCoin.amount)
         userCoin.amount = userCoin.amount - 1
         state.payment = state.payment + payload
-        vmachineCoin.amount = vmachineCoin.amount + payload
-        console.log(vmachineCoin)
+        vmachineCoin.amount = vmachineCoin.amount + 1
       }
     },
     BUY_PRODUCT (state, product) {
-      console.log(this.vmachineCoins)
       if (state.payment < product.price) {
         console.log('недостаточно денег')
       } else if (state.payment >= product.price) {
@@ -180,7 +169,9 @@ export default new Vuex.Store({
       }
     },
     GET_PAYBACK (state, payload) {
-      state.payment = state.payment - payload.payment
+      state.payment = payload.paybackLocal
+      state.cashier.coins = payload.cashierCoins
+      state.user.coins = payload.userCoins
     }
 
   },
@@ -197,15 +188,23 @@ export default new Vuex.Store({
       commit('BUY_PRODUCT', payload)
     },
     getPayback ({ commit, getters, state }) {
-      getters.vmachineCoins.map((coin) => {
-        const coinSum = (coin.amount * coin.cost)
-        if (coinSum > state.payment) {
-          const coinPaybackAmount = Math.floor(state.payment / coin.cost)
-          console.log('coinPaybackAmount')
-          console.log(coinPaybackAmount)
-          commit('GET_PAYBACK', { payment: coinPaybackAmount })
+      let paybackLocal = state.payment
+      const newUserCoins = getters.userCoins
+      const newCashierCoins = getters.cashierCoins.map((cashierCoin) => {
+        const coinSum = (cashierCoin.amount * cashierCoin.cost)
+        const userCoin = newUserCoins.find((userCoin) => userCoin.cost === cashierCoin.cost)
+        if (coinSum >= paybackLocal) {
+          cashierCoin.amount = cashierCoin.amount - Math.floor(paybackLocal / cashierCoin.cost)
+          userCoin.amount = userCoin.amount + Math.floor(paybackLocal / cashierCoin.cost)
+          paybackLocal = paybackLocal - Math.floor(paybackLocal / cashierCoin.cost) * cashierCoin.cost
+          return cashierCoin
+        } else if (coinSum < state.payment) {
+          userCoin.amount = userCoin.amount + cashierCoin.amount
+          cashierCoin.amount = 0
+          return cashierCoin
         }
       })
+      commit('GET_PAYBACK', { cashierCoins: newCashierCoins, userCoins: newUserCoins, paybackLocal })
     }
   }
 })

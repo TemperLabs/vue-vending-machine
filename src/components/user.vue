@@ -1,6 +1,5 @@
 <template>
   <div class="user">
-    {{userCoins}}
     <div class="user_coins">
       <h1>Customer</h1>
       <ul>
@@ -15,22 +14,12 @@
       <ul>
         <li v-for="(good, key) in userGoods" :key="key">
           <div>{{good.name}}</div>
-          <div>{{good.amount}} шт.</div>
+          <div :class="`user-goods--${good.name}`">{{good.amount}} шт.</div>
         </li>
       </ul>
         Потрачено: {{userTotalSpent}}
       </div>
     </div>
-<!--    <div class="user_goods">-->
-<!--      Купленное-->
-<!--      <ul>-->
-<!--        <li v-for="item in user.goods" :key="item.name">-->
-<!--          <div class="user_good" :class="[`user_good-${item.name}`]">-->
-<!--            <div>{{item.name}}</div>-->
-<!--          </div>-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--    </div>-->
     <div>
     </div>
   </div>
@@ -67,16 +56,10 @@ export default {
    padding: 8px 5px;
    border-radius: 7px;
  }
-  .user_good-1 {
-    transform: translate3d(0, 120px, 120px);
-    background: midnightblue;
+  .user-goods {
+    background: lightgray;
+    width: 40px;
+    height: 40px;
   }
- .user_good-2 {
-   transform: translate3d(0, 249px, 120px);
-   background: #700d14;
- }
- .user_good-3 {
-   transform: translate3d(0, 360px, 120px);
-   background: #4a7035;
- }
+
 </style>
